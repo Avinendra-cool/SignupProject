@@ -1,0 +1,44 @@
+create database Project2021Db
+use Project2021Db
+create table tblSignUp(pkUserName nvarchar(25) primary key,[Password] nvarchar(20),
+EmailId nvarchar(50),MobileNo bigint,SecQuest nvarchar(150),SecAns nvarchar(150))
+
+create procedure usp_SignUp @userName nvarchar(25),@password nvarchar(20),@emailId nvarchar(50),
+@mobileNo bigint,@secQuest nvarchar(150),@secAns nvarchar(150)
+as
+begin
+insert into tblSignUp(pkUserName,[Password],EmailId,MobileNo,SecQuest,SecAns)values(@userName,
+@password,@emailId,@mobileNo,@secQuest,@secAns)
+end
+
+use Project2021Db
+create procedure usp_SignIn @userName nvarchar(25),@password nvarchar(20)
+as
+begin
+select * from tblSignUp where pkUserName=@userName and [Password]=@password
+end
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+use Project2021Db
+drop table tblProfileUser
+
+create table tblProfileUser(pkProfileId bigint identity(1,1),FirstName nvarchar(20),LastName nvarchar(20),
+Dob date,Qualification nvarchar(20), Gender nvarchar(10),MaritalStatus nvarchar(10),
+[Address] nvarchar(250),Hobbies nvarchar(100),ImagePath nvarchar(250),
+fkUserName nvarchar(25) foreign key references tblSignUp(pkUserName))
+
+create proc usp_InsertProfile @firstName nvarchar(20),@lastName nvarchar(20),@dob date,
+@qualification nvarchar(20),@gender nvarchar(10),@maritalStatus nvarchar(10),
+@address nvarchar(250),@hobbies nvarchar(100),@imagePath nvarchar(250),
+@userName nvarchar(25)
+as
+begin
+insert into tblProfileUser values(@firstName,@lastName,@dob,@qualification,@gender,@maritalStatus,
+@address,@hobbies,@imagePath,@userName)
+end
+
+create proc usp_GetProfile @username nvarchar(25)
+as
+begin
+select * from tblProfileUser where fkUserName=@username
+end
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
